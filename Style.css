@@ -1,0 +1,368 @@
+/* =========================
+   GROOVE GALLERIA STYLE
+========================= */
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  font-family:'Montserrat', sans-serif;
+  background:#050505;
+  color:#ffffff;
+  overflow-x:hidden;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+nav{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  padding:22px 8%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:1000;
+
+  background:rgba(0,0,0,0.25);
+  backdrop-filter:blur(14px);
+
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.logo{
+  font-size:1.2rem;
+  font-weight:700;
+  letter-spacing:4px;
+}
+
+.nav-links{
+  display:flex;
+  gap:35px;
+}
+
+.nav-links a{
+  position:relative;
+  text-decoration:none;
+  color:white;
+  font-size:0.9rem;
+  font-weight:500;
+  transition:0.3s ease;
+}
+
+.nav-links a::after{
+  content:'';
+  position:absolute;
+  left:0;
+  bottom:-8px;
+  width:0%;
+  height:1px;
+  background:white;
+  transition:0.3s ease;
+}
+
+.nav-links a:hover::after{
+  width:100%;
+}
+
+/* =========================
+   HERO SECTION
+========================= */
+
+.hero{
+  position:relative;
+  width:100%;
+  height:100vh;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+
+  overflow:hidden;
+}
+
+.hero-image{
+  position:absolute;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+
+  top:0;
+  left:0;
+
+  filter:brightness(0.55);
+  transform:scale(1.05);
+}
+
+.overlay{
+  position:absolute;
+  width:100%;
+  height:100%;
+
+  background:
+  linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.1),
+    rgba(0,0,0,0.75)
+  );
+
+  z-index:1;
+}
+
+.hero-content{
+  position:relative;
+  z-index:2;
+  max-width:750px;
+  padding:20px;
+}
+
+.hero-content h1{
+  font-size:5rem;
+  font-weight:700;
+  letter-spacing:8px;
+  margin-bottom:20px;
+
+  animation:fadeUp 1s ease;
+}
+
+.hero-content p{
+  font-size:1rem;
+  line-height:1.9;
+  opacity:0.8;
+
+  animation:fadeUp 1.4s ease;
+}
+
+.hero-btn{
+  display:inline-block;
+  margin-top:35px;
+
+  padding:15px 38px;
+
+  border:1px solid white;
+
+  color:white;
+  text-decoration:none;
+  font-size:0.85rem;
+  letter-spacing:2px;
+
+  transition:0.3s ease;
+
+  animation:fadeUp 1.8s ease;
+}
+
+.hero-btn:hover{
+  background:white;
+  color:black;
+  transform:translateY(-3px);
+}
+
+/* =========================
+   SNOW EFFECT
+========================= */
+
+.snow{
+  position:absolute;
+  width:100%;
+  height:100%;
+  top:0;
+  left:0;
+
+  z-index:2;
+  pointer-events:none;
+}
+
+.snow span{
+  position:absolute;
+  display:block;
+
+  background:white;
+  border-radius:50%;
+
+  animation:fall linear infinite;
+}
+
+@keyframes fall{
+
+  0%{
+    transform:translateY(-10vh);
+    opacity:0;
+  }
+
+  20%{
+    opacity:1;
+  }
+
+  100%{
+    transform:translateY(110vh);
+    opacity:0;
+  }
+
+}
+
+/* =========================
+   FEATURED SECTION
+========================= */
+
+.featured{
+  padding:120px 8%;
+  background:#080808;
+}
+
+.featured-title{
+  text-align:center;
+  margin-bottom:60px;
+}
+
+.featured-title h2{
+  font-size:2.4rem;
+  letter-spacing:3px;
+}
+
+.products{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+  gap:35px;
+}
+
+.product-card{
+  position:relative;
+  overflow:hidden;
+
+  border-radius:24px;
+
+  background:#111;
+
+  transition:0.4s ease;
+}
+
+.product-card:hover{
+  transform:translateY(-10px);
+}
+
+.product-card img{
+  width:100%;
+  height:420px;
+  object-fit:cover;
+
+  transition:0.5s ease;
+}
+
+.product-card:hover img{
+  transform:scale(1.05);
+}
+
+.product-info{
+  padding:25px;
+}
+
+.product-info h3{
+  font-size:1.2rem;
+  margin-bottom:10px;
+}
+
+.product-info p{
+  opacity:0.65;
+  font-size:0.92rem;
+  line-height:1.7;
+}
+
+/* =========================
+   GLASS EFFECT CARD
+========================= */
+
+.glass-card{
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.08);
+
+  backdrop-filter:blur(10px);
+
+  border-radius:24px;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer{
+  padding:40px 8%;
+  text-align:center;
+  background:#050505;
+
+  border-top:1px solid rgba(255,255,255,0.08);
+}
+
+footer p{
+  opacity:0.5;
+  font-size:0.85rem;
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes fadeUp{
+
+  from{
+    opacity:0;
+    transform:translateY(40px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:900px){
+
+  .hero-content h1{
+    font-size:3rem;
+    letter-spacing:4px;
+  }
+
+}
+
+@media(max-width:768px){
+
+  nav{
+    padding:18px 6%;
+  }
+
+  .nav-links{
+    display:none;
+  }
+
+  .hero-content h1{
+    font-size:2.2rem;
+  }
+
+  .hero-content p{
+    font-size:0.9rem;
+  }
+
+  .hero-btn{
+    padding:13px 28px;
+  }
+
+  .product-card img{
+    height:350px;
+  }
+
+}
