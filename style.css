@@ -90,8 +90,9 @@ nav{
 
   object-fit:cover;
 
-  filter:none;
 
+  filter:brightness(1.2);
+  
   transform:scale(1.03);
   }
 
@@ -439,7 +440,8 @@ nav{
 
   object-fit:cover;
 
-  filter:none !important;
+  filter:brightness(1.2);
+
 
   transform:none;
 
