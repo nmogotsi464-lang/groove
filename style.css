@@ -90,7 +90,7 @@ nav{
 
   object-fit:cover;
 
-  filter:brightness(0.55);
+  filter:none;
 
   transform:scale(1.03);
   }
