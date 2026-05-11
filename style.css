@@ -96,8 +96,15 @@ nav{
   }
 
   <!-- DARK OVERLAY -->
-  <div class="overlay"></div>
+  .overlay{
+  position:absolute;
+  width:100%;
+  height:100%;
 
+  background:rgba(0,0,0,0.25);
+
+  z-index:2;
+  }
   <!-- SNOW EFFECT -->
   <div class="snow" id="snow"></div>
 
