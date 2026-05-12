@@ -170,11 +170,18 @@ And add this CSS under your hero styles:
   animation:fadeUp 1s ease;
 }
 
-.hero-content h1{
-  font-size:6rem;
-  line-height:0.95;
-  margin-bottom:25px;
-}
+.hero-content{
+  position:absolute;
+
+  left:8%;
+  bottom:12%;
+
+  z-index:3;
+
+  max-width:550px;
+
+  text-align:left;
+   }
 
 .hero-buttons{
   margin-top:40px;
@@ -229,8 +236,9 @@ And add this CSS under your hero styles:
 
 @media(max-width:768px){
 
-  .hero-content h1{
-    font-size:3.2rem;
+  ..hero-content h1{
+  font-size:4.5rem;
+  line-height:0.95;
   }
 
   .hero-buttons{
