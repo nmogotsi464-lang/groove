@@ -156,7 +156,29 @@ nav{
   font-size:1rem;
   line-height:1.5;
    }
+.hero-btn{
+  display:inline-block;
 
+  margin-top:20px;
+  padding:14px 30px;
+
+  border:1px solid white;
+
+  color:white;
+  text-decoration:none;
+
+  font-size:0.9rem;
+  letter-spacing:2px;
+
+  transition:0.3s ease;
+
+  z-index:5;
+}
+
+.hero-btn:hover{
+  background:white;
+  color:black;
+   }
 And add this CSS under your hero styles:
 
 /* =========================
