@@ -13,14 +13,29 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
+
+  <style>
+    .product {
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin: 10px;
+      border-radius: 10px;
+    }
+
+    .product img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+  </style>
+
 </head>
 
 <body>
 
   <!-- NAVBAR -->
-
   <nav>
-
     <div class="logo">
       GROOVE GALLERIA
     </div>
@@ -31,136 +46,89 @@
       <a href="#">About</a>
       <a href="#">Contact</a>
     </div>
-
   </nav>
-  
-<section id="shop">
-  <h2>Shop</h2>
-  
-</section>
-  <!-- HERO -->
 
+  <!-- HERO -->
   <section class="hero">
 
     <img src="hero.jpg" alt="Groove Galleria" class="hero-image">
-
     <div class="overlay"></div>
 
     <div class="snow" id="snow"></div>
 
     <div class="hero-content">
+      <span class="hero-tag">WINTER '26 DROP</span>
 
-      <span class="hero-tag">
-        WINTER '26 DROP
-      </span>
+      <h1>GROOVE<br>GALLERIA</h1>
 
-      <h1>
-        GROOVE<br>GALLERIA
-      </h1>
-
-      <p>
-        Eyewear inspired by culture, music and modern street luxury.
-      </p>
+      <p>Eyewear inspired by culture, music and modern street luxury.</p>
 
       <div class="hero-buttons">
-
-        <a href="#" class="hero-btn">
-          VIEW CATALOG
-        </a>
-
-        <a href="#" class="hero-btn secondary-btn">
-          EXPLORE
-        </a>
-
+        <a href="#" class="hero-btn">VIEW CATALOG</a>
+        <a href="#" class="hero-btn secondary-btn">EXPLORE</a>
       </div>
-
     </div>
 
-    <div class="scroll-down">
-      SCROLL
-    </div>
+    <div class="scroll-down">SCROLL</div>
 
   </section>
 
-  <!-- FEATURED -->
+  <!-- SHOP SECTION (THIS IS NOW CLEAN) -->
+  <section id="shop">
 
-  <section class="featured">
+    <h2>Shop</h2>
 
-    <div class="featured-title">
-      <h2>Featured Collection</h2>
-    </div>
-
-    <div class="products">
-
-      <div class="product-card">
-
-        <img src="your-product.jpg" alt="Product">
-
-        <div class="product-info">
-          
-<div id="products"></div>
-        </div>
-
-      </div>
-
-    </div>
+    <div id="products"></div>
 
   </section>
 
   <!-- FOOTER -->
-
   <footer>
-    <p>
-      © 2026 Groove Galleria
-    </p>
+    <p>© 2026 Groove Galleria</p>
   </footer>
 
-  <!-- SNOW SCRIPT -->
-
+  <!-- SNOW + API SCRIPT -->
   <script>
 
-    const snowContainer =
-      document.getElementById('snow');
+    const snowContainer = document.getElementById('snow');
 
-    for(let i = 0; i < 120; i++){
+    for (let i = 0; i < 120; i++) {
 
-      let snowflake =
-        document.createElement('span');
+      let snowflake = document.createElement('span');
 
-      snowflake.style.left =
-        Math.random() * 100 + 'vw';
-
-      snowflake.style.animationDuration =
-        (Math.random() * 5 + 5) + 's';
-
-      snowflake.style.opacity =
-        Math.random();
-
-      snowflake.style.width =
-      snowflake.style.height =
-        Math.random() * 4 + 2 + 'px';
-
-      snowflake.style.animationDelay =
-        Math.random() * 5 + 's';
+      snowflake.style.left = Math.random() * 100 + 'vw';
+      snowflake.style.animationDuration = (Math.random() * 5 + 5) + 's';
+      snowflake.style.opacity = Math.random();
+      snowflake.style.width = snowflake.style.height = Math.random() * 4 + 2 + 'px';
+      snowflake.style.animationDelay = Math.random() * 5 + 's';
 
       snowContainer.appendChild(snowflake);
     }
 
-  fetch("https://sheetdb.io/api/v1/5rx85jjefrjui")
-  .then(res => res.json())
-  .then(products => {
-    const container = document.getElementById("products");
+    // SHEETDB PRODUCTS
+    fetch("https://sheetdb.io/api/v1/5rx85jjefrjui")
+      .then(res => res.json())
+      .then(products => {
 
-    products.forEach(product => {
-      container.innerHTML += `
-        <div class="product">
-          <img src="${product.image || ''}" alt="${product.name}" />
-          <h3>${product.name}</h3>
-          <p>R${product.price}</p>
-          <p>Stock: ${product.stock}</p>
-        </div>
-      `;
-    });
-  });
+        const container = document.getElementById("products");
+
+        let html = "";
+
+        products.forEach(product => {
+          html += `
+            <div class="product">
+              <img src="${product.image || ''}" alt="${product.name}" />
+              <h3>${product.name}</h3>
+              <p>R${product.price}</p>
+              <p>Stock: ${product.stock}</p>
+            </div>
+          `;
+        });
+
+        container.innerHTML = html;
+      });
+
+  </script>
+
 </body>
-</html>
+    </html>
