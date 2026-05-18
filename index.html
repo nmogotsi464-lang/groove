@@ -33,7 +33,11 @@
     </div>
 
   </nav>
-
+  
+<section id="shop">
+  <h2>Shop</h2>
+  <div id="products"></div>
+</section>
   <!-- HERO -->
 
   <section class="hero">
@@ -148,6 +152,22 @@
     }
 
   </script>
+<script>
+fetch("https://sheetdb.io/api/v1/5rx85jjefrjui")
+  .then(res => res.json())
+  .then(products => {
+    const container = document.getElementById("products");
 
+    products.forEach(product => {
+      container.innerHTML += `
+        <div class="product">
+          <h3>${product.name}</h3>
+          <p>R${product.price}</p>
+          <p>Stock: ${product.stock}</p>
+        </div>
+      `;
+    });
+  });
+  </script>
 </body>
 </html>
