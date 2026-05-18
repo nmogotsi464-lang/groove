@@ -146,9 +146,7 @@
       snowContainer.appendChild(snowflake);
     }
 
-  </script>
-<script>
-fetch("https://sheetdb.io/api/v1/5rx85jjefrjui")
+  fetch("https://sheetdb.io/api/v1/5rx85jjefrjui")
   .then(res => res.json())
   .then(products => {
     const container = document.getElementById("products");
@@ -156,6 +154,7 @@ fetch("https://sheetdb.io/api/v1/5rx85jjefrjui")
     products.forEach(product => {
       container.innerHTML += `
         <div class="product">
+          <img src="${product.image || ''}" alt="${product.name}" />
           <h3>${product.name}</h3>
           <p>R${product.price}</p>
           <p>Stock: ${product.stock}</p>
@@ -163,6 +162,5 @@ fetch("https://sheetdb.io/api/v1/5rx85jjefrjui")
       `;
     });
   });
-  </script>
 </body>
 </html>
