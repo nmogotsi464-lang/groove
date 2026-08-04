@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Checkout | Groove Galleria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="style.css">
+<style>
+  .checkout-wrap { width: 92%; max-width: 560px; margin: 0 auto 90px; }
+  .checkout-product {
+    display: flex; gap: 18px; align-items: center;
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 18px; margin-bottom: 28px;
+  }
+  .checkout-product img { width: 96px; height: 96px; object-fit: cover; border-radius: var(--radius-md); background: var(--bg-raised); }
+  .checkout-product h3 { font-size: 1rem; font-weight: 500; margin-bottom: 6px; }
+  .checkout-product .product-price { font-size: 1rem; font-weight: 600; }
+
+  .qty-row { display: flex; align-items: center; gap: 16px; margin: 24px 0; }
+  .qty-row button {
+    width: 38px; height: 38px; border-radius: 50%;
+    border: 1px solid var(--border); background: #fff; cursor: pointer;
+    font-size: 1rem; color: var(--ink); transition: 0.25s;
+  }
+  .qty-row button:hover { border-color: var(--sage); color: var(--green); }
+  .qty-row span { font-weight: 500; min-width: 20px; text-align: center; }
+
+  .checkout-total {
+    font-family: var(--font-display); font-size: 1.4rem; font-weight: 500;
+    margin: 22px 0; color: var(--ink);
+  }
+
+  .pay-btn { width: 100%; text-align: center; }
+  .pay-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .checkout-msg { margin-top: 14px; }
+  .checkout-error { color: #a4453e; font-size: 0.88rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">GROOVE GALLERIA</a>
+</nav>
+
+<div class="page-hero" style="padding-bottom: 20px;">
+  <span class="eyebrow">Secure Checkout</span>
+  <h1>Checkout</h1>
+</div>
+
+<div class="checkout-wrap">
+  <div id="checkout-body">
+    <p style="color: var(--grey); font-weight: 300;">Loading product…</p>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2026 Groove Galleria. All rights reserved.</p>
+</footer>
+
+<script>
+const SHEETDB_URL = "https://sheetdb.io/api/v1/5rx85jjefrjui";
+const params = new URLSearchParams(window.location.search);
+const productId = params.get("id");
+const body = document.getElementById("checkout-body");
+
+let quantity = 1;
+let product = null;
+
+if (!productId) {
+  body.innerHTML = '<p class="checkout-error">No product selected. Go back to the <a href="shop.html">shop</a>.</p>';
+} else {
+  fetch(SHEETDB_URL)
+    .then(res => res.json())
+    .then(products => {
+      product = products.find(p => p.id === productId);
+      if (!product) {
+        body.innerHTML = '<p class="checkout-error">Product not found.</p>';
+        return;
+      }
+      render();
+    })
+    .catch(() => {
+      body.innerHTML = '<p class="checkout-error">Couldn\'t load product — try refreshing.</p>';
+    });
+}
+
+function render() {
+  const outOfStock = Number(product.stock) <= 0;
+  body.innerHTML = `
+    <div class="checkout-product">
+      <img src="${product.image || ''}" alt="${product.name}">
+      <div>
+        <p class="product-category">${product.category || 'Eyewear'}</p>
+        <h3>${product.name}</h3>
+        <p class="product-price">R${product.price}</p>
+        ${outOfStock ? '<p class="checkout-error">Out of stock</p>' : ''}
+      </div>
+    </div>
+
+    ${!outOfStock ? `
+    <div class="qty-row">
+      <button type="button" id="qty-minus" aria-label="Decrease quantity">−</button>
+      <span id="qty-value">1</span>
+      <button type="button" id="qty-plus" aria-label="Increase quantity">+</button>
+    </div>
+
+    <div class="field" style="margin-bottom: 16px;">
+      <label for="buyer-name">Name</label>
+      <input type="text" id="buyer-name" placeholder="Your name">
+    </div>
+    <div class="field" style="margin-bottom: 16px;">
+      <label for="buyer-email">Email (for your receipt)</label>
+      <input type="email" id="buyer-email" placeholder="you@example.com">
+    </div>
+
+    <div class="checkout-total" id="checkout-total">Total: R${product.price}</div>
+
+    <button class="btn pay-btn" id="pay-btn">Pay with PayFast</button>
+    <div class="checkout-msg" id="checkout-msg"></div>
+    ` : ''}
+  `;
+
+  if (outOfStock) return;
+
+  document.getElementById("qty-minus").addEventListener("click", () => updateQty(-1));
+  document.getElementById("qty-plus").addEventListener("click", () => updateQty(1));
+  document.getElementById("pay-btn").addEventListener("click", startPayment);
+}
+
+function updateQty(delta) {
+  const max = Number(product.stock);
+  quantity = Math.min(max, Math.max(1, quantity + delta));
+  document.getElementById("qty-value").textContent = quantity;
+  const total = (parseFloat(product.price) * quantity).toFixed(2);
+  document.getElementById("checkout-total").textContent = `Total: R${total}`;
+}
+
+async function startPayment() {
+  const payBtn = document.getElementById("pay-btn");
+  const msg = document.getElementById("checkout-msg");
+  payBtn.disabled = true;
+  payBtn.textContent = "Redirecting to PayFast…";
+  msg.innerHTML = "";
+
+  const buyerName = document.getElementById("buyer-name").value;
+  const buyerEmail = document.getElementById("buyer-email").value;
+
+  try {
+    const res = await fetch("/.netlify/functions/create-payment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ productId, quantity, buyerName, buyerEmail }),
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.error || "Something went wrong");
+    }
+
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = data.action;
+    Object.entries(data.fields).forEach(([key, value]) => {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = key;
+      input.value = value;
+      form.appendChild(input);
+    });
+    document.body.appendChild(form);
+    form.submit();
+  } catch (err) {
+    msg.innerHTML = `<p class="checkout-error">${err.message}. Please try again.</p>`;
+    payBtn.disabled = false;
+    payBtn.textContent = "Pay with PayFast";
+  }
+}
+</script>
+
+</body>
+</html>

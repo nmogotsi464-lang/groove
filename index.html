@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Groove Galleria | Premium Streetwear Eyewear</title>
+<meta name="description" content="Premium sunglasses and blue light eyewear inspired by culture, music and modern street luxury. Shop the latest drop from Groove Galleria." />
+
+<meta property="og:title" content="Groove Galleria" />
+<meta property="og:description" content="Premium sunglasses and blue light eyewear inspired by culture, music and modern street luxury." />
+<meta property="og:image" content="https://groovegalleria.co.za/hero.jpg" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://groovegalleria.co.za/" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="style.css">
+<style>
+  .hero-slideshow { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero-slide {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    background-size: cover; background-position: center;
+    opacity: 0;
+    animation: heroFade 24s infinite;
+  }
+  .hero-slide img { display: none; } /* images preloaded via <img> tags below, rendered as background */
+  @keyframes heroFade {
+    0%   { opacity: 0; transform: scale(1); }
+    4%   { opacity: 1; }
+    20%  { opacity: 1; transform: scale(1.08); }
+    25%  { opacity: 0; transform: scale(1.08); }
+    100% { opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-slide { animation: none; opacity: 0; }
+    .hero-slide:first-child { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">GROOVE GALLERIA</a>
+  <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-links">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="index.html" aria-current="page">Home</a></li>
+    <li><a href="shop.html">Shop</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-slideshow" id="hero-slideshow">
+    <img src="hero.jpg" alt="Groove Galleria eyewear campaign" class="hero-image">
+  </div>
+  <div class="overlay"></div>
+  <div class="hero-content">
+    <span class="hero-tag">SPRING '26</span>
+    <h1>Groove Galleria</h1>
+    <p>Eyewear for movement, culture, and everyday clarity.</p>
+    <a href="shop.html" class="btn">VIEW CATALOG</a>
+  </div>
+  <div class="scroll-down">SCROLL</div>
+</section>
+
+<section class="section" style="margin-top: 100px;">
+  <div class="section-header">
+    <div>
+      <h2>Featured</h2>
+      <p>From the new collection.</p>
+    </div>
+    <a href="shop.html" class="btn btn-outline">VIEW ALL</a>
+  </div>
+  <div class="products-grid" id="products">
+    <div class="loading-state">Loading featured pieces…</div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="https://wa.me/27706686611" target="_blank" rel="noopener">WhatsApp</a>
+  </div>
+  <p>&copy; 2026 Groove Galleria. All rights reserved.</p>
+</footer>
+
+<script>
+// Mobile nav toggle
+const toggle = document.querySelector('.nav-toggle');
+const links = document.getElementById('nav-links');
+toggle.addEventListener('click', () => {
+  const open = links.classList.toggle('open');
+  toggle.setAttribute('aria-expanded', open);
+});
+links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  links.classList.remove('open');
+  toggle.setAttribute('aria-expanded', 'false');
+}));
+
+// Hero slideshow — pulls a handful of product shots and crossfades between them
+fetch("https://sheetdb.io/api/v1/5rx85jjefrjui")
+  .then(res => res.json())
+  .then(products => {
+    const available = products.map(p => p.image).filter(Boolean);
+    if (!available.length) return; // fall back to the static hero.jpg already in the markup
+
+    const SLOTS = 5; // must match the CSS keyframe timing (each slide gets 24s/5 ≈ 4.8s)
+    const images = Array.from({ length: SLOTS }, (_, i) => available[i % available.length]);
+
+    const slideshow = document.getElementById("hero-slideshow");
+    const perSlide = 24 / SLOTS; // seconds — 24s must match the CSS animation duration
+
+    slideshow.innerHTML = images.map((src, i) => `
+      <div class="hero-slide" style="background-image:url('${src}'); animation-delay:${i * perSlide}s;"></div>
+    `).join('');
+  })
+  .catch(() => {}); // static hero.jpg stays as the fallback
+
+// Featured products
+fetch("https://sheetdb.io/api/v1/5rx85jjefrjui")
+  .then(res => res.json())
+  .then(products => {
+    const container = document.getElementById("products");
+    const featured = products.filter(p => p.featured && p.featured.toLowerCase() === "yes");
+
+    if (!featured.length) {
+      container.innerHTML = '<div class="empty-state">No featured pieces right now — check the full shop.</div>';
+      return;
+    }
+
+    container.innerHTML = featured.map(product => `
+      <div class="product">
+        <img src="${product.image || ''}" alt="${product.name}" loading="lazy">
+        <div class="product-info">
+          <p class="product-category">${product.category || 'Eyewear'}</p>
+          <h3>${product.name}</h3>
+          <p class="product-price">R${product.price}</p>
+          <p class="stock">${product.stock} in stock</p>
+          <a href="checkout.html?id=${encodeURIComponent(product.id)}" class="order-btn">
+            Buy Now
+          </a>
+        </div>
+      </div>
+    `).join('');
+  })
+  .catch(() => {
+    document.getElementById("products").innerHTML = '<div class="empty-state">Couldn\'t load products right now — try refreshing.</div>';
+  });
+</script>
+
+</body>
+</html>

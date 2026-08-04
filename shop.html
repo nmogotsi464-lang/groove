@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Shop | Groove Galleria</title>
+<meta name="description" content="Browse the full Groove Galleria catalog — premium sunglasses and blue light glasses for men, women and unisex." />
+<meta property="og:title" content="Shop | Groove Galleria" />
+<meta property="og:image" content="https://groovegalleria.co.za/hero.jpg" />
+<meta property="og:type" content="website" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">GROOVE GALLERIA</a>
+  <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-links">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="shop.html" aria-current="page">Shop</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="page-hero">
+  <span class="eyebrow">Full Catalog</span>
+  <h1>Shop</h1>
+  <p>The full collection — sunglasses and blue light eyewear.</p>
+</div>
+
+<section class="section">
+  <div class="filters" id="filters">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="men's">Men's</button>
+    <button class="filter-btn" data-filter="women's">Women's</button>
+    <button class="filter-btn" data-filter="unisex">Unisex</button>
+  </div>
+  <div class="products-grid" id="products">
+    <div class="loading-state">Loading catalog…</div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="https://wa.me/27706686611" target="_blank" rel="noopener">WhatsApp</a>
+  </div>
+  <p>&copy; 2026 Groove Galleria. All rights reserved.</p>
+</footer>
+
+<script>
+// Mobile nav toggle
+const toggle = document.querySelector('.nav-toggle');
+const links = document.getElementById('nav-links');
+toggle.addEventListener('click', () => {
+  const open = links.classList.toggle('open');
+  toggle.setAttribute('aria-expanded', open);
+});
+links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  links.classList.remove('open');
+  toggle.setAttribute('aria-expanded', 'false');
+}));
+
+// Product catalog + filtering
+let allProducts = [];
+const grid = document.getElementById('products');
+
+function renderProducts(list) {
+  if (!list.length) {
+    grid.innerHTML = '<div class="empty-state">No pieces in this category yet — check back soon.</div>';
+    return;
+  }
+  grid.innerHTML = list.map(product => `
+    <div class="product">
+      <img src="${product.image || ''}" alt="${product.name}" loading="lazy">
+      <div class="product-info">
+        <p class="product-category">${product.category || 'Eyewear'}</p>
+        <h3>${product.name}</h3>
+        <p class="product-price">R${product.price}</p>
+        <p class="stock">${product.stock} in stock</p>
+        <a href="checkout.html?id=${encodeURIComponent(product.id)}" class="order-btn">
+          Buy Now
+        </a>
+      </div>
+    </div>
+  `).join('');
+}
+
+fetch("https://sheetdb.io/api/v1/5rx85jjefrjui")
+  .then(res => res.json())
+  .then(products => {
+    allProducts = products;
+    renderProducts(allProducts);
+  })
+  .catch(() => {
+    grid.innerHTML = '<div class="empty-state">Couldn\'t load the catalog right now — try refreshing.</div>';
+  });
+
+document.getElementById('filters').addEventListener('click', (e) => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  const filter = btn.dataset.filter;
+  if (filter === 'all') {
+    renderProducts(allProducts);
+  } else {
+    renderProducts(allProducts.filter(p => (p.gender || p.category || '').toLowerCase().includes(filter)));
+  }
+});
+</script>
+
+</body>
+</html>
